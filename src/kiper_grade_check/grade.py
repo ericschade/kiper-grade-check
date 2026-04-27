@@ -17,11 +17,10 @@ def compute_expected_av_by_slot(historical_picks: pd.DataFrame) -> pd.DataFrame:
     Output: dataframe with columns [pick_overall, expected_av], one row per slot
     observed in input.
     """
-    grouped = (
-        historical_picks.groupby("pick_overall", as_index=False)["career_av"]
-        .mean()
-        .sort_values("pick_overall")
+    mean_by_pick: pd.DataFrame = (
+        historical_picks.groupby("pick_overall", as_index=False)["career_av"].mean()  # type: ignore[assignment]
     )
+    grouped = mean_by_pick.sort_values("pick_overall")
     smoothed = lowess(
         endog=grouped["career_av"].to_numpy(),
         exog=grouped["pick_overall"].to_numpy(),
@@ -63,11 +62,11 @@ def z_within_year(df: pd.DataFrame, col: str, group_col: str = "draft_year") -> 
     """Return df with an added '{col}_z' column z-scored within each draft_year."""
     out = df.copy()
 
-    def _z(s: pd.Series) -> pd.Series:
-        std = s.std(ddof=0)
-        if std == 0 or pd.isna(std):
+    def _z(s: pd.Series) -> pd.Series:  # type: ignore[type-arg]
+        std: float = s.std(ddof=0)  # type: ignore[assignment]
+        if std == 0 or bool(pd.isna(std)):
             return pd.Series([0.0] * len(s), index=s.index)
-        return (s - s.mean()) / std
+        return (s - s.mean()) / std  # type: ignore[return-value]
 
     out[f"{col}_z"] = out.groupby(group_col)[col].transform(_z)
     return out
@@ -99,15 +98,15 @@ def compute_actual_grade(
     sc_w = weights["pct_second_contract"]
     tw_w = weights["team_wins_5yr"]
 
-    def composite(row: pd.Series) -> float:
-        if pd.isna(row["pct_second_contract"]):
+    def composite(row: pd.Series) -> float:  # type: ignore[type-arg]
+        if bool(pd.isna(row["pct_second_contract"])):
             denom = av_w + pb_w + tw_w
-            return (
+            return float(
                 av_w * row["total_av_over_expected_z"]
                 + pb_w * row["avg_pro_bowls_per_pick_z"]
                 + tw_w * row["team_wins_5yr_z"]
             ) / denom
-        return (
+        return float(
             av_w * row["total_av_over_expected_z"]
             + pb_w * row["avg_pro_bowls_per_pick_z"]
             + sc_w * row["pct_second_contract_z"]
