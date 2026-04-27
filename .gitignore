@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.python-version-local
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# Raw scrapes — re-fetchable, not source-of-truth
+data/raw/*
+!data/raw/.gitkeep
+
+# Notebook outputs — strip before commit
+notebooks/*.nbconvert.ipynb
+
+# Local env
+.env
