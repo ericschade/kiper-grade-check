@@ -34,4 +34,5 @@ def derive_second_contract_same_team(
         return bool(s["team"] == row["team"] and s["year_signed"] >= row["draft_year"] + 3)
 
     out["second_contract_same_team"] = out.apply(evaluate, axis=1)
-    return out[["player_id", "second_contract_same_team"]]
+    result: pd.DataFrame = out[["player_id", "second_contract_same_team"]]  # type: ignore[assignment]
+    return result

@@ -1,8 +1,6 @@
 import pandas as pd
-import pytest
 
 from kiper_grade_check.transform.careers import (
-    EvalCompleteness,
     add_eval_completeness,
     build_picks,
     canonicalize_team_codes,

@@ -28,7 +28,7 @@ def canonicalize_team_codes(df: pd.DataFrame) -> pd.DataFrame:
     year_col = "draft_year" if "draft_year" in out.columns else "season"
     out["team"] = [
         TEAM_CODE_ALIASES.get((int(y), t), t)
-        for y, t in zip(out[year_col], out["team"])
+        for y, t in zip(out[year_col], out["team"], strict=False)
     ]
     return out
 
@@ -74,4 +74,5 @@ def build_picks(raw: pd.DataFrame) -> pd.DataFrame:
         "final_season",
         "eval_completeness",
     ]
-    return df[keep].reset_index(drop=True)
+    result: pd.DataFrame = df[keep].reset_index(drop=True)  # type: ignore[assignment]
+    return result
