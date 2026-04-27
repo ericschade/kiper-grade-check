@@ -20,7 +20,7 @@
 - **`httpx` + `selectolax`** for the Football Outsiders / FTN scrape; **`wayback`** package as fallback.
 - **`pandas` + `pyarrow`** for transforms and storage. (`nflreadpy` returns polars; we convert at the source-module boundary.)
 - **`jupyter`** for the analysis notebook.
-- **`pytest`** for tests; **`ruff`** for lint; **`pyright`** for type-checking. Pre-commit wired up.
+- **`pytest`** for tests; **`ruff`** for lint; **`pyright`** for type-checking. CI runs all three on push (no pre-commit hooks — keep it minimal).
 
 ## Repo layout
 
@@ -230,7 +230,7 @@ Known noise sources documented inline. Pilot validation: spot-check 50 random ro
 
 ### Team relocations / renames
 
-Maintain `data/team_code_aliases.csv` mapping `(year, source_name) → canonical_code`. Known: `OAK→LV` (2020), `SD→LAC` (2017), `STL→LAR` (2016), `WAS→WSH` rebrand (2022). About a dozen entries.
+Maintain a `TEAM_CODE_ALIASES` dict in `transform/careers.py` (small enough — ~3 entries — to keep inline rather than as a CSV file). Known: `OAK→LV` (2020+), `SD→LAC` (2017+), `STL→LAR` (2016+). nflverse keeps `WAS` constant across the rebrand, so no entry needed there.
 
 ### Football Outsiders / FTN scrape failures
 
