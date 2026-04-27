@@ -168,7 +168,7 @@ def parse_report_card_html(html: str, draft_year: int, source_url: str) -> pd.Da
         # Header row: Team | Analyst1 | Analyst2 | ...
         # Data rows: team_name | grade | grade | ...
         analyst_cols = [h for h in header_cells if h in KNOWN_ANALYSTS]
-        if header_cells and header_cells[0].lower() == "team" and len(analyst_cols) >= 2:
+        if header_cells and header_cells[0].lower() == "team" and len(analyst_cols) >= 1:
             headers = header_cells
             for tr in table_rows[1:]:
                 cells = [(c.text(strip=True) or "").strip() for c in tr.css("th, td")]
