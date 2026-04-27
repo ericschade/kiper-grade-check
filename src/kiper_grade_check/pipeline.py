@@ -95,7 +95,7 @@ def build_all(
     picks = careers.build_picks(raw_picks)
     target = picks[picks["draft_year"].isin(years_list)].copy()
 
-    sc = contracts.derive_second_contract_same_team(target, raw_contracts)
+    sc = contracts.derive_second_contract_same_team(target, raw_contracts)  # type: ignore[arg-type]
     target = target.merge(sc, on="player_id", how="left")
     _emit(target, processed_dir, "picks")
 
@@ -119,7 +119,7 @@ def build_all(
     _emit(analyst_grades, processed_dir, "analyst_grades")
 
     historical = raw_picks.rename(columns={"pick": "pick_overall", "car_av": "career_av"})
-    av_curve = compute_expected_av_by_slot(historical[["pick_overall", "career_av"]].dropna())
+    av_curve = compute_expected_av_by_slot(historical[["pick_overall", "career_av"]].dropna())  # type: ignore[arg-type]
     target = target.merge(av_curve, on="pick_overall", how="left")
     target["av_over_expected"] = target["career_av"] - target["expected_av"].fillna(0)
 
@@ -134,7 +134,7 @@ def build_all(
             pct_second_contract=("second_contract_same_team", lambda s: s.dropna().mean() if s.notna().any() else None),
         )
     )
-    teams_in_scope = grouped["team"].unique().tolist()
+    teams_in_scope: list[str] = grouped["team"].drop_duplicates().tolist()  # type: ignore[assignment]
     wins = team_wins.compute_team_wins_5yr(raw_schedules, draft_years=years_list, teams=teams_in_scope)
     outcomes = grouped.merge(wins, on=["draft_year", "team"], how="left")
     outcomes = compute_actual_grade(outcomes)
